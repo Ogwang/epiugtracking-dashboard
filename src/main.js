@@ -7,6 +7,8 @@ import config from './config'
 
 const firebase = require('firebase')
 firebase.initializeApp(config.firebase)
+Vue.$firebase = firebase
+Vue.prototype.$firebase = firebase
 
 Vue.config.productionTip = false
 
