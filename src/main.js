@@ -5,6 +5,11 @@ import App from './App'
 import router from './router'
 import config from './config'
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+Vue.use(VueAxios, axios)
+
 const firebase = require('firebase')
 firebase.initializeApp(config.firebase)
 Vue.$firebase = firebase

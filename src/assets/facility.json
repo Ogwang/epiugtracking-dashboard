@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+
+"features": [
+{ "type": "Feature", "properties": { "name": "Ayaka HC II", "type": "HC II", "ownership": "Government", "authority": "MOH", "uid": "XikHv88zzDn", "Lat": 2.449980, "region": "Northern Region", "district": "Zombo District", "subcounty": "Zeu Subcounty", "Lon": 30.822540, "districtid": "A4aGXEfdb8P", "subcountid": "WPNKWhyNTT3" }, "geometry": { "type": "Point", "coordinates": [ 30.822540000420759, 2.449979999677282 ] } },
+{ "type": "Feature", "properties": { "name": "Bugaya HC III ( Buvuma )", "type": "HC III", "ownership": "Government", "authority": "MOH", "uid": "aVeE8JrylXn", "Lat": 0.048954, "region": "Central Region", "district": "Buvuma District", "subcounty": "Buvuma Bugaya Subcounty", "Lon": 33.286101, "districtid": "aZLZPPjqft0", "subcountid": "zpLy53v57se" }, "geometry": { "type": "Point", "coordinates": [ 33.286101000360929, 0.048954000326887 ] } },
+{ "type": "Feature", "properties": { "name": "Buyuki HC II", "type": "HC II", "ownership": "Government", "authority": "MOH", "uid": "T4M9UgfqV5q", "Lat": 0.772130, "region": "Central Region", "district": "Luwero District", "subcounty": "Katikamu Subcounty", "Lon": 32.570600, "districtid": "tr9XWtYsL5P", "subcountid": "lTJKdr8yZcj" }, "geometry": { "type": "Point", "coordinates": [ 32.570600000089996, 0.772130000199411 ] } },
+{ "type": "Feature", "properties": { "name": "Doctors Clinic", "type": "Clinic", "ownership": "Private For Profit", "authority": "Local Government", "uid": "U7EJdvmBZpv", "Lat": 0.665480, "region": "Western Region", "district": "Kyenjojo District", "subcounty": "Kyenjojo Town Council", "Lon": 30.503870, "districtid": "O9MoQcpZ4uA", "subcountid": "v4SsBMVYOWo" }, "geometry": { "type": "Point", "coordinates": [ 30.503869999800713, 0.665480000401772 ] } }
+]
+}
