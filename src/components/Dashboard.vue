@@ -5,6 +5,9 @@
 
       <v-circle v-for="village in villages"  :key="village.id" :lat-lng="village.location" :radius="1000"
       ></v-circle>
+
+      <v-circle v-for="event in events"  :key="event.id" :lat-lng="event.location" :radius="1000"
+      ></v-circle>
     </v-map>
   </div>
 </template>
@@ -23,8 +26,10 @@ export default {
   data: function () {
     return {
       mapCenter: [1.3671058, 30.0588381],
-      facilities: {},
-      villages: []
+      facilities: [],
+      villages: [],
+      events: [],
+      facilityMap: {}
     }
   },
   created () {
@@ -33,7 +38,9 @@ export default {
       snapshot.forEach(facility => {
         let id = facility.key
         const val = facility.val()
-        this.facilities[id] = val
+        val.location = [val.lat, val.lng]
+        this.facilities.push(val)
+        this.facilityMap[id] = val
       })
     }).then(() => {
       db.ref('villages').once('value').then(snapshot => {
@@ -44,6 +51,19 @@ export default {
           val.location = [val.lat, val.lng]
           this.villages.push(val)
         })
+      })
+    }).then(() => {
+      db.ref('events').on('child_added', (snapshot) => {
+        const event = snapshot.val()
+        event.id = snapshot.key
+        const facility = this.facilityMap[event.facility]
+        if (facility) {
+          event.location = facility.location
+        } else {
+          console.log(`missing facility code ${event.facility}`)
+        }
+
+        this.events.push(event)
       })
     })
   }
