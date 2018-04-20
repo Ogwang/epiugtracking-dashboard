@@ -2,9 +2,12 @@
   <div id="map">
     <v-map style="height:100%" :zoom="8" :center="mapCenter">
       <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
-      <v-circle v-for="event in events"  :key="event.id" :lat-lng="event.location" :radius="1000" color="#ef9504"
-                :tooltip="event.message" @click="select(c)"
-      ></v-circle>
+
+      <f-marker v-for="f in facilitiesAll" :key="f.uid" :lat-lng="f.location" :radius="500" color="#666" :tooltip="f.name"></f-marker>
+
+      <f-marker v-for="event in events"  :key="event.id" :lat-lng="event.location" :radius="1000" color="#ef9504"
+                :tooltip="eventInfo(event)"
+      ></f-marker>
 
       <v-circle v-for="c in cases"  :key="c.id" :lat-lng="c.location" :radius="c.radius" color="#ed0b0b" @click="select(c)"
       ></v-circle>
@@ -21,14 +24,17 @@ import { LMap, LTileLayer, LCircle, LGeoJson } from 'vue2-leaflet'
 import Vue from 'vue'
 import Wink from './Wink'
 import CaseDetail from './CaseDetail'
+import CircleMarker from './CircleMarker'
 
-const facilityjson = require('../assets/facility.json')
+const facilityGeoJson = require('../assets/facility.json')
+
 export default {
   name: 'Dashboard',
   components: {
     'v-map': LMap,
     'v-tilelayer': LTileLayer,
     'v-circle': LCircle,
+    'f-marker': CircleMarker,
     'v-geo-json': LGeoJson,
     'wink': Wink,
     'case-detail': CaseDetail
@@ -37,7 +43,7 @@ export default {
     return {
       mapCenter: [1.3671058, 30.0588381],
       winks: [],
-      facilityGeoJson: facilityjson,
+      facilitiesAll: '',
       geoJsonOptions: {
         style: function () {
           return {
@@ -54,7 +60,7 @@ export default {
       events: [],
       facilityMap: {},
       cases: [],
-      showCaseDetail: false
+      showCaseDetail: true
     }
   },
   methods: {
@@ -65,9 +71,23 @@ export default {
     hideCaseDetail () {
       console.log('close me')
       this.showCaseDetail = false
+    },
+    eventInfo (event) {
+      return `PhoneNumber: ${event.phoneNumber} Symptom: ${event.symptom} Number of cases/deaths ${event.numberOfCases}/${event.numberOfDeaths}`
     }
   },
+  mounted () {
+    setTimeout(() => {
+      this.showCaseDetail = false
+    }, 500)
+  },
   created () {
+    this.facilitiesAll = facilityGeoJson.features.map(f => {
+      const p = f.properties
+      p.location = [p.Lat, p.Lon]
+      return p
+    })
+
     const db = Vue.$firebase.database()
     db.ref('facilities').once('value').then(snapshot => {
       snapshot.forEach(facility => {
@@ -90,7 +110,6 @@ export default {
     }).then(() => {
       db.ref('events').on('child_added', (snapshot) => {
         const event = snapshot.val()
-        event.id = snapshot.key
         const facility = this.facilityMap[event.facility]
         if (facility) {
           if (event.resolve === undefined || event === false) {
@@ -99,7 +118,7 @@ export default {
             this.winks.push(event)
             setTimeout(() => {
               this.winks.splice(this.winks.indexOf(event), 1)
-            }, 4000)
+            }, 10000)
           }
         } else {
           console.log(`missing facility code ${event.facility}`)
@@ -115,7 +134,7 @@ export default {
         this.winks.push(c)
         setTimeout(() => {
           this.winks.splice(this.winks.indexOf(c), 1)
-        }, 4000)
+        }, 10000)
       })
     })
     db.ref('events').on('child_changed', snap => {

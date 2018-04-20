@@ -24,7 +24,7 @@
         </tr>
       </table>
       <div id="chart-container">
-        <my-chart :data="renderdata"></my-chart>
+        <my-chart :data="chartData"></my-chart>
       </div>
     </div>
 
@@ -42,59 +42,61 @@ export default {
   },
   data () {
     return {
-      testdataIndex: 0,
-      testdata: [
-        {
-          // Data to be represented on x-axis
-          labels: ['day 1', 'day 2', 'day 3', 'day 4', 'day 5'],
-          datasets: [
-            {
-              label: 'Cases',
-              backgroundColor: '#f87979',
-              pointBackgroundColor: 'white',
-              borderWidth: 1,
-              pointBorderColor: '#249EBF',
-              // Data to be represented on y-axis
-              data: [40, 20, 30, 50, 90]
-            }
-          ]
-        },
-        {
-          // Data to be represented on x-axis
-          labels: ['day 1', 'day 2', 'day 3', 'day 4', 'day 5'],
-          datasets: [
-            {
-              label: 'Cases',
-              backgroundColor: '#f87979',
-              pointBackgroundColor: 'white',
-              borderWidth: 1,
-              pointBorderColor: '#249EBF',
-              // Data to be represented on y-axis
-              data: [1, 2, 3, 4, 5]
-            }
-          ]
-        }
-      ],
+      chartData: [0],
       facilities: [
         {
           id: 1,
-          name: 'xxxxx',
+          name: 'Oyima HC III',
           cases: [0, 1, 2, 3, 4],
-          deaths: [0, 0, 0, 0, 0]
+          deaths: [0, 0, 0, 0, 1]
         },
         {
           id: 2,
-          name: 'yyyyy',
+          name: 'Ragem HC II',
           cases: [1, 1, 2, 3, 3],
           deaths: [0, 0, 0, 0, 0]
+        },
+        {
+          id: 3,
+          name: 'Pawor HC II',
+          cases: [0, 0, 0, 1, 1],
+          deaths: [0, 0, 0, 0, 0]
+        },
+        {
+          id: 4,
+          name: 'Akino HC II',
+          cases: [0, 1, 1, 0, 0],
+          deaths: [0, 0, 0, 0, 0]
+        },
+        {
+          id: 5,
+          name: 'Pachora HC II',
+          cases: [0, 0, 2, 3, 4],
+          deaths: [0, 0, 0, 0, 1]
         }
       ],
       days: 10
     }
   },
+  mounted () {
+    setTimeout(() => {
+      this.select()
+    }, 800)
+  },
   methods: {
     select (facility, idx) {
-      this.testdataIndex = idx
+      if (facility !== null) {
+        this.chartData = facility.cases
+      } else {
+        let acc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        for (var i = 0; i < 10; i++) {
+          for (var j = 0; j < this.facilities.length; j++) {
+            acc[i] = acc[i] + this.facilities[j].cases[i]
+          }
+        }
+        this.chartData = acc
+      }
+      console.log(this.chartData)
     },
     renderCase (facility, day) {
       let c = -1
