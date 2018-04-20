@@ -60,7 +60,7 @@ export default {
       events: [],
       facilityMap: {},
       cases: [],
-      showCaseDetail: true
+      showCaseDetail: false
     }
   },
   methods: {
@@ -75,11 +75,6 @@ export default {
     eventInfo (event) {
       return `PhoneNumber: ${event.phoneNumber} Symptom: ${event.symptom} Number of cases/deaths ${event.numberOfCases}/${event.numberOfDeaths}`
     }
-  },
-  mounted () {
-    setTimeout(() => {
-      this.showCaseDetail = false
-    }, 500)
   },
   created () {
     this.facilitiesAll = facilityGeoJson.features.map(f => {
@@ -108,8 +103,10 @@ export default {
         })
       })
     }).then(() => {
-      db.ref('events').on('child_added', (snapshot) => {
-        const event = snapshot.val()
+      console.log('.>>>>>>> events child-added')
+      db.ref('events').on('child_added', (s) => {
+        const event = s.val()
+        console.log(event)
         const facility = this.facilityMap[event.facility]
         if (facility) {
           if (event.resolve === undefined || event === false) {
@@ -122,6 +119,8 @@ export default {
           }
         } else {
           console.log(`missing facility code ${event.facility}`)
+          console.log(event)
+          console.log(this.facilityMap)
         }
       })
     }).then(() => {
@@ -137,19 +136,19 @@ export default {
         }, 10000)
       })
     })
-    db.ref('events').on('child_changed', snap => {
-      const event = snap.val()
-      event.id = snap.key
-
-      if (event.resolve) {
-        // find index in events and remove it
-        const idx = this.events.findIndex(item => item.id === event.id)
-        if (idx >= 0) {
-          console.log(`remove at index ${idx}`)
-          this.events.splice(idx, 1)
-        }
-      }
-    })
+    // db.ref('events').on('child_changed', snap => {
+    //   const event = snap.val()
+    //   event.id = snap.key
+    //
+    //   if (event.resolve) {
+    //     // find index in events and remove it
+    //     const idx = this.events.findIndex(item => item.id === event.id)
+    //     if (idx >= 0) {
+    //       console.log(`remove at index ${idx}`)
+    //       this.events.splice(idx, 1)
+    //     }
+    //   }
+    // })
 
     db.ref('cases').on('child_removed', snap => {
       const c = snap.val()

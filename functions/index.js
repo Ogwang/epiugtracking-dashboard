@@ -56,7 +56,7 @@ exports.events = functions.https.onRequest((req, res) => {
       const v = snap.val()
       facility = v.facility
 
-      const ref = db.ref('events').push(refId)
+      const ref = db.ref('events').push()
       ref.set({
         message: message,
         numberOfCases: numberOfCases,
